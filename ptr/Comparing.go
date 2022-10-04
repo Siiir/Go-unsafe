@@ -4,8 +4,14 @@ import (
 	"unsafe"
 )
 
-// Returns true if both bytes arrays of size `n`, pointed by p1 & p2 are equal.
-// ptr.CmpBitsAs[[n]uint8](p1,p2) is safe & static alternive for this function.
+/*
+	Returns true if both bytes arrays of size `n`, pointed by p1 & p2 are equal.
+
+	Alternatives:
+
+	Function CmpBitsAs[[n]uint8](p1,p2) from https://github.com/Siiir/ptr v1.0.0,
+	is a safe & static alternative for this unsafe one.
+*/
 func CmpNBytes(n uintptr, p1, p2 unsafe.Pointer) bool {
 	if n > 0 {
 		n--

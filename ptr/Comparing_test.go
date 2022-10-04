@@ -14,11 +14,11 @@ func TestCmpNBytes(t *testing.T) {
 		a [2][]byte
 		n uintptr
 	}{
-		{[2][]byte{[]byte("a\bcde\f"), []byte("abcde")}, 4},
+		{[2][]byte{[]byte("a\bcde\f"), []byte("abcde")}, 4}, // 0
 		{[2][]byte{[]byte("abc"), []byte("def")}, 3},
-		{[2][]byte{[]byte("XHKr"), []byte("XHKr")}, 1},
+		{[2][]byte{[]byte("XHKr"), []byte("XHKr")}, 1}, // 2
 
-		{[2][]byte{[]byte(
+		{[2][]byte{[]byte( // 3
 			"ajklsdfasdfkljklasjkasdfflkasdfaklfiwe492104|X/epDDaLFDJAKLDAIWALwd"),
 			[]byte("ajklsdfasdfkljklasjkasdfflkasdfaklfiwe492104|X/epDDaLFDJAKLDAIWALwd")},
 			37,
@@ -30,20 +30,17 @@ func TestCmpNBytes(t *testing.T) {
 			},
 			42,
 		},
-		{[2][]byte{[]byte("\x1fÝnC\xefÎ5_"), []byte("\x1fÝnD\xefÎ5_")}, 4},
+		{[2][]byte{[]byte("Î5_\x1fÝnD\xef"), []byte("Î5_\x1fÝnD\xef")}, 4}, // 5 −  false  ⇐ "Î" != "I"+"̂"
 
 		{[2][]byte{[]byte(""), []byte("")}, 0},
 	}
 	expectTab := [tcQuantity]bool{
-		false, false, true,
-		true, true, false,
-		true,
+		false, false, true, // 0, 1, 2
+		true, true, false, // 3, 4, 5
+		true, // 6
 	}
 
-	a, e := asserter.NewTiny(func(s string) { t.Error(s) })
-	if e != nil {
-		panic(e)
-	}
+	a := asserter.PNewTiny(func(s string) { t.Error(s) })
 	for tcInd, args := range argTab {
 		n, sh1, sh2 := args.n, *(*reflect.SliceHeader)(unsafe.Pointer(&args.a[0])), *(*reflect.SliceHeader)(unsafe.Pointer(&args.a[1]))
 		ex := expectTab[tcInd]
