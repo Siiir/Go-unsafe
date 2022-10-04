@@ -10,7 +10,7 @@ import (
 	Alternatives:
 
 	Function CmpBitsAs[[n]uint8](p1,p2) from https://github.com/Siiir/ptr v1.0.0,
-	is a safe & static alternative for this unsafe one.
+	is a safe & more compile-time alternative for this unsafe one.
 */
 func CmpNBytes(n uintptr, p1, p2 unsafe.Pointer) bool {
 	if n > 0 {
